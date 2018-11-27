@@ -16,12 +16,15 @@
   "homepage": "",
   "dependencies": {
     "aws-sdk": "^2.358.0",
+    "stomp-client": "^0.9.0",
     "dotenv": "6.0.0",
     "prettier": "^1.13.2",
     "ts-node": "7.0.1",
     "tslint": "^5.10.0",
     "tslint-config-prettier": "^1.13.0",
-    "typescript": "3.0.3",
-    "@types/node": "10.12.9"
+    "typescript": "^3.0.3",
+    "typedi": "^0.8.0",
+    "reflect-metadata": "^0.1.12",
+    "@types/node": "^10.12.9"
   }
 }

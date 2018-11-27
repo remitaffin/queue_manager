@@ -1,15 +1,17 @@
-import { SQSHelper } from './helpers/sqs';
+import { Container } from 'typedi';
 
-export function send_message(env: any): boolean {
+import { QueueManagerService } from './services/QueueManagerService';
+
+export function send_message(env: any): any {
     const body = {
         method: 'POST',
         message: 'http://url/endpoint?test=1',
     };
-    const sqshelper = new SQSHelper();
-    return sqshelper.send_message(env, body);
+    const queueManager = Container.get(QueueManagerService);
+    return queueManager.send_message(env, body);
 }
 
 export function get_message(env: any): any {
-    const sqshelper = new SQSHelper();
-    return sqshelper.get_first_message(env);
+    const queueManager = Container.get(QueueManagerService);
+    return queueManager.get_message(env);
 }
