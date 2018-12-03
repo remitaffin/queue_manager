@@ -1,4 +1,3 @@
-// import 'reflect-metadata';
 import { StompClient } from 'stomp-client';
 import { Inject } from 'typedi';
 
@@ -17,10 +16,10 @@ export class ActiveMQHelper {
     }
 
     private _connect(env: any): void {
-        this.stompClient.address = '127.0.0.1';
-        this.stompClient.port = 61613;
-        this.stompClient.user = 'admin';
-        this.stompClient.pass = 'admin';
+        this.stompClient.address = env.host;
+        this.stompClient.port = env.port;
+        this.stompClient.user = env.user;
+        this.stompClient.pass = env.password;
     }
 
     private async _sendMessageAsync(queueName: string, body_dict: any): Promise<any> {

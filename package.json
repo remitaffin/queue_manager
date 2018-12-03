@@ -17,6 +17,7 @@
   "dependencies": {
     "aws-sdk": "^2.358.0",
     "stomp-client": "^0.9.0",
+    "amqplib": "^0.5.3",
     "dotenv": "6.0.0",
     "prettier": "^1.13.2",
     "ts-node": "7.0.1",

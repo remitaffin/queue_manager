@@ -3,6 +3,7 @@ import { Inject, Service } from 'typedi';
 
 // import { SQSHelper } from '../helpers/SQSHelper';
 import { ActiveMQHelper } from '../helpers/ActiveMQHelper';
+// import { RabbitMQHelper } from '../helpers/RabbitMQHelper';
 
 export interface BaseQueue {
     send_message(env: any, body: any): boolean;
