@@ -58,8 +58,6 @@ export class RabbitMQService implements BaseService {
                         ch.consume(env.queueName, (msg) => {
                             if (msg !== null) {
                                 resolve(JSON.parse(msg.content.toString()));
-                            } else {
-                                reject('Empty message');
                             }
                         }, {noAck: true});
                     });
