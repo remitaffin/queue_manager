@@ -1,6 +1,10 @@
+import 'reflect-metadata';
 import * as amqp from 'amqplib/callback_api';
+import { Service } from 'typedi';
+import { BaseService } from './BaseService';
 
-export class RabbitMQHelper {
+@Service()
+export class RabbitMQService implements BaseService {
 
     public async send_message(env: any, body_dict: any): Promise<any> {
         const task = JSON.stringify(body_dict);
@@ -8,8 +12,7 @@ export class RabbitMQHelper {
     }
 
     public async get_message(env: any): Promise<any> {
-        const stringified_message = await this._receiveMessageAsync(env);
-        return JSON.parse(stringified_message);
+        return await this._receiveMessageAsync(env);
     }
 
     private _get_connection_string(env: any): string {
@@ -21,10 +24,16 @@ export class RabbitMQHelper {
             try {
                 const connection_string = this._get_connection_string(env);
                 amqp.connect(connection_string, (err, conn) => {
+                    if (err) {
+                        reject(err);
+                    }
                     conn.createChannel((err2, ch) => {
-                       ch.assertQueue(env.queueName);
-                       ch.sendToQueue(env.queueName, Buffer.from(task));
-                       resolve(true);
+                        if (err2) {
+                            reject(err2);
+                        }
+                        ch.assertQueue(env.queueName);
+                        ch.sendToQueue(env.queueName, Buffer.from(task));
+                        resolve(true);
                     });
                 });
             } catch (error) {
@@ -38,14 +47,21 @@ export class RabbitMQHelper {
             try {
                 const connection_string = this._get_connection_string(env);
                 amqp.connect(connection_string, (err, conn) => {
+                    if (err) {
+                        reject(err);
+                    }
                     conn.createChannel((err2, ch) => {
+                        if (err2) {
+                            reject(err2);
+                        }
                         ch.assertQueue(env.queueName);
                         ch.consume(env.queueName, (msg) => {
                             if (msg !== null) {
-                                resolve(msg.content.toString());
-                                ch.ack(msg);
+                                resolve(JSON.parse(msg.content.toString()));
+                            } else {
+                                reject('Empty message');
                             }
-                        });
+                        }, {noAck: true});
                     });
                 });
             } catch (error) {

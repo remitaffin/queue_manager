@@ -1,7 +1,10 @@
+import 'reflect-metadata';
 import { StompClient } from 'stomp-client';
-import { Inject } from 'typedi';
+import { Inject, Service } from 'typedi';
+import { BaseService } from './BaseService';
 
-export class ActiveMQHelper {
+@Service()
+export class ActiveMQService implements BaseService {
     @Inject()
     private stompClient: StompClient;
 

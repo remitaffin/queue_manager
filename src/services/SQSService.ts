@@ -1,10 +1,13 @@
 // On other environments, will require:
 //  - AWS_ACCESS_KEY_ID
 //  - AWS_SECRET_ACCESS_KEY
+import 'reflect-metadata';
 import * as AWS from 'aws-sdk';
-import { Inject } from 'typedi';
+import { Inject, Service } from 'typedi';
+import { BaseService } from './BaseService';
 
-export class SQSHelper {
+@Service()
+export class SQSService implements BaseService {
     @Inject()
     private sqs: AWS.SQS;
 
