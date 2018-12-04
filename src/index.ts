@@ -4,11 +4,7 @@ import { Container } from 'typedi';
 // import { ActiveMQService as QueueService } from './services/ActiveMQService';
 import { RabbitMQService as QueueService } from './services/RabbitMQService';
 
-export function send_message(env: any): any {
-    const body = {
-        method: 'POST',
-        message: 'http://url/endpoint?test=1',
-    };
+export function send_message(env: any, body: any): any {
     const queueManager = Container.get(QueueService);
     return queueManager.send_message(env, body);
 }
