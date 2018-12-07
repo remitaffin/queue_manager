@@ -31,6 +31,7 @@ export class ActiveMQService implements BaseService {
                 const destination = '/queue/' + queueName;
                 this.stompClient.connect((sessionId) => {
                     this.stompClient.publish(destination, JSON.stringify(body_dict));
+                    this.stompClient.disconnect();
                     resolve(true);
                 });
             } catch (error) {
@@ -44,10 +45,9 @@ export class ActiveMQService implements BaseService {
             try {
                 const destination = '/queue/' + queueName;
                 this.stompClient.connect((sessionId) => {
-                    const subscription = this.stompClient.subscribe(destination, (body, headers) => {
+                    this.stompClient.subscribe(destination, (body, headers) => {
                         resolve(JSON.parse(body));
                     });
-                    subscription.unsubscribe();
                 });
             } catch (error) {
                 reject(error);

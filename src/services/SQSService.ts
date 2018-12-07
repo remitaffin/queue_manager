@@ -32,16 +32,16 @@ export class SQSService implements BaseService {
     public async get_message(env: any): Promise<any> {
         // Receive message from SQS
 
-        // Set the region
-        AWS.config.update({ region: env.region });
-
         const params = {
             AttributeNames: ['SentTimestamp'],
             MaxNumberOfMessages: 1,
             MessageAttributeNames: ['All'],
             QueueUrl: env.queueUrl,
             VisibilityTimeout: 20,
-            WaitTimeSeconds: 0,
+            // WaitTimeSeconds needs to be between 1 and 20.
+            // Increasing the number will check the queue less often, but will
+            // make the AWS bill cheaper
+            WaitTimeSeconds: 5,
         };
 
         return await this._receiveMessageAsync(params);
@@ -71,7 +71,7 @@ export class SQSService implements BaseService {
                 this.sqs.receiveMessage(params, (err, data) => {
                     if (err) {
                         console.log('Receive Error', err);
-                        reject(false);
+                        reject(err);
                     } else if (data.Messages) {
                         const deleteParams = {
                             QueueUrl: params.QueueUrl,
@@ -79,13 +79,14 @@ export class SQSService implements BaseService {
                         };
                         this.sqs.deleteMessage(deleteParams, (err2, data2) => {
                             if (err2) {
-                                console.log('Delete Error', err2);
-                                reject(false);
+                                console.log('Delete Error');
+                                reject(err2);
                             } else {
-                                console.log('Message Deleted', data2);
                                 resolve(JSON.parse(data.Messages[0].Body));
                             }
                         });
+                    } else {
+                        reject('Empty message');
                     }
                 });
             } catch (error) {
