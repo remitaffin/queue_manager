@@ -1,8 +1,8 @@
 import { Container } from 'typedi';
 
-// import { SQSService as QueueService } from './services/SQSService';
+import { SQSService as QueueService } from './services/SQSService';
 // import { ActiveMQService as QueueService } from './services/ActiveMQService';
-import { RabbitMQService as QueueService } from './services/RabbitMQService';
+// import { RabbitMQService as QueueService } from './services/RabbitMQService';
 
 export function send_message(env: any, body: any): any {
     const queueManager = Container.get(QueueService);
@@ -12,4 +12,9 @@ export function send_message(env: any, body: any): any {
 export function get_message(env: any): any {
     const queueManager = Container.get(QueueService);
     return queueManager.get_message(env);
+}
+
+export function clear_message(env: any, receiptHandle: any): any {
+    const queueManager = Container.get(QueueService);
+    return queueManager.clear_message(env, receiptHandle);
 }

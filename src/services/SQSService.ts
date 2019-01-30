@@ -47,6 +47,17 @@ export class SQSService implements BaseService {
         return await this._receiveMessageAsync(params);
     }
 
+    public async clear_message(env: any, receiptHandle: any): Promise<any> {
+        // Delete message from SQS Queue
+
+        const deleteParams = {
+            QueueUrl: env.queueUrl,
+            ReceiptHandle: receiptHandle,
+        };
+
+        return await this._clearMessageAsync(deleteParams);
+    }
+
     private async _sendMessageAsync(params: any): Promise<any> {
         return new Promise((resolve, reject) => {
             try {
@@ -73,20 +84,28 @@ export class SQSService implements BaseService {
                         console.log('Receive Error', err);
                         reject(err);
                     } else if (data.Messages) {
-                        const deleteParams = {
-                            QueueUrl: params.QueueUrl,
-                            ReceiptHandle: data.Messages[0].ReceiptHandle,
-                        };
-                        this.sqs.deleteMessage(deleteParams, (err2, data2) => {
-                            if (err2) {
-                                console.log('Delete Error');
-                                reject(err2);
-                            } else {
-                                resolve(JSON.parse(data.Messages[0].Body));
-                            }
-                        });
+                        // Returns an object that contains
+                        // {Body: '{"stringified_json": ""}', ReceiptHandle: {}}
+                        resolve(data.Messages[0]);
                     } else {
                         reject('Empty message');
+                    }
+                });
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    private async _clearMessageAsync(params: any): Promise<any> {
+        return new Promise((resolve, reject) => {
+            try {
+                this.sqs.deleteMessage(params, (err, data) => {
+                    if (err) {
+                        console.log('Delete Error');
+                        reject(err);
+                    } else {
+                        resolve(true);
                     }
                 });
             } catch (error) {
